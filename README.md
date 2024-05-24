@@ -37,30 +37,30 @@ Step 3: Configure the Method
     key: Required
 Set Up Integration Request:
 
-Go back to the POST method and click on "Integration Request".
-Under "Mapping Templates", expand "Request Body Passthrough" and click on "Add mapping template".
-Enter application/json as the Content-Type.
-Confirm when prompted to "Create a new mapping template".
-Edit the Mapping Template:
+    Go back to the POST method and click on "Integration Request".
+    Under "Mapping Templates", expand "Request Body Passthrough" and click on "Add mapping template".
+    Enter application/json as the Content-Type.
+    Confirm when prompted to "Create a new mapping template".
+    Edit the Mapping Template:
 
-In the template editor, map the query parameters to the Lambda event. Example template:
+    In the template editor, map the query parameters to the Lambda event. Example template:
 
-json
-Copy code
-{
-  "queryStringParameters": {
-    "bucket": "$input.params('bucket')",
-    "key": "$input.params('key')"
-  }
-}
-Deploy the API:
+    json
+    Copy code
+    {
+    "queryStringParameters": {
+        "bucket": "$input.params('bucket')",
+        "key": "$input.params('key')"
+    }
+    }
+Step 4: Deploy the API:
 
-In the left-hand pane, click on "Actions" and select "Deploy API".
-Create a new deployment stage (e.g., dev).
-Click on "Deploy".
-Testing the API
-Invoke the API:
+    In the left-hand pane, click on "Actions" and select "Deploy API".
+    Create a new deployment stage (e.g., dev).
+    Click on "Deploy".
+    Testing the API
+    Invoke the API:
 
-Use a tool like curl, Postman, or your browser to send a request to the API endpoint.
-Example request URL:
+    Use a tool like curl, Postman, or your browser to send a request to the API endpoint.
+    Example request URL: https://your-api-id.execute-api.your-region.amazonaws.com/dev/files?bucket=your-bucket-name&key=your-file-key
 
