@@ -1,3 +1,147 @@
+### Detailed Guide to Automate Script Run from local to EC2 instance
+
+Precreate roles and provide appropriate permissions to the role.
+Also create Object key in 
+
+Step 1: Create a local Lambda layer for Nanoid or any python library locally
+Zip and create a deplopment package 
+Upload the package to AWS Lambda
+
+
+Step 2: Create a Lambda function
+
+Step 3: Create API Gateway (Steps mentioned below)
+
+Step 4: Create a Table in DynamoDB 
+
+### Detailed Guide to create IAM Role:
+
+Step 1: Create or Identify the IAM Role
+`Create a New IAM Role (if you don't have one already):
+    `
+    Go to the IAM console: IAM Console.
+    Click on "Roles" in the left-hand menu.
+    Click on the "Create role" button.
+    Choose the "AWS service" as the trusted entity and select "Lambda".
+    Click "Next: Permissions".
+    Attach the Necessary Policies:`
+
+You can attach managed policies directly or create a custom policy if more specific permissions are needed.
+Step 1.1: Attach Managed Policies
+    AmazonS3ReadOnlyAccess: This provides read-only access to S3.
+    AmazonDynamoDBFullAccess: This provides full access to DynamoDB.
+    To attach these policies:
+
+    In the search box, type AmazonS3ReadOnlyAccess and check the box next to it.
+    In the search box, type AmazonDynamoDBFullAccess and check the box next to it.
+    Click "Next: Tags" (you can skip adding tags).
+    Click "Next: Review".
+
+Step 1.2: Create and Attach a Custom Policy (for more granular control)
+    If you need more granular control over the permissions, you can create a custom policy:
+
+    Create a Custom Policy:
+
+        Go to the IAM console and click on "Policies" in the left-hand menu.
+
+        Click on "Create policy".
+
+        Choose the "JSON" tab and paste the following policy:
+
+
+        {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetObject",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+                "arn:aws:s3:::YOUR_BUCKET_NAME",
+                "arn:aws:s3:::YOUR_BUCKET_NAME/*"
+            ]
+            },
+            {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:PutItem",
+                "dynamodb:GetItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:Scan",
+                "dynamodb:Query"
+            ],
+            "Resource": "arn:aws:dynamodb:YOUR_REGION:YOUR_ACCOUNT_ID:table/FileTable"
+            }
+        ]
+        }
+    Replace YOUR_BUCKET_NAME, YOUR_REGION, YOUR_ACCOUNT_ID, and FileTable with your actual bucket name, region, AWS account ID, and DynamoDB table name, respectively.
+
+    Click "Review policy".
+
+    Provide a name for the policy (e.g., LambdaS3DynamoDBPolicy) and click "Create policy".
+
+    Attach the Custom Policy to Your Lambda Role:
+
+    Go back to the IAM console and click on "Roles".
+    Find and click on the role you created (e.g., LambdaS3DynamoDBRole).
+    Click on the "Attach policies" button.
+    Search for the custom policy you just created (LambdaS3DynamoDBPolicy).
+    Check the box next to the policy and click "Attach policy".
+
+Step 2: Attach the IAM Role to Your Lambda Function
+    Go to the Lambda Console: Lambda Console.
+    Find Your Lambda Function: Click on your Lambda function to open its configuration page.
+    Configure the Function’s Execution Role:
+    In the "Configuration" tab, click on "Permissions".
+    Under "Execution role", click "Edit".
+    Select the role you created (LambdaS3DynamoDBRole).
+    Click "Save".
+    Example IAM Policies
+    Here's a summary of the managed and custom policies you may need:
+
+AmazonS3ReadOnlyAccess:
+
+Copy code
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::YOUR_BUCKET_NAME",
+        "arn:aws:s3:::YOUR_BUCKET_NAME/*"
+      ]
+    }
+  ]
+}
+Custom DynamoDB Policy:
+
+json
+Copy code
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:PutItem",
+        "dynamodb:GetItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:Scan",
+        "dynamodb:Query"
+      ],
+      "Resource": "arn:aws:dynamodb:YOUR_REGION:YOUR_ACCOUNT_ID:table/FileTable"
+    }
+  ]
+}
+Replace placeholders with your actual values. After following these steps, your Lambda function should have the necessary permissions to interact with both S3 and DynamoDB.
+
 ### Detailed Guide to Configure API Gateway with Query Parameters
 
 
@@ -45,7 +189,6 @@ Set Up Integration Request:
 
     In the template editor, map the query parameters to the Lambda event. Example template:
 
-    json
     Copy code
     {
     "queryStringParameters": {

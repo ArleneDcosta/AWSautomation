@@ -36,8 +36,8 @@ def lambda_handler(event, context):
         table.put_item(
             Item={
                 'id': id,
-                'input_text': f's3://{bucket_name}/{key}',
-                'input_file_path': file_content  # Optional: storing file content
+                'input_text': file_content,
+                'input_file_path':f's3://{bucket_name}/{key}'  # Optional: storing file content
             }
         )
     except ClientError as e:

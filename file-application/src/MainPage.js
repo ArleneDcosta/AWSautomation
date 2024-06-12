@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import AWS from 'aws-sdk';
-import config from '../../nanoid/config.js';
+import config from './config.js';
 import './MainPage.css'
 
 const MainPage = () => {
